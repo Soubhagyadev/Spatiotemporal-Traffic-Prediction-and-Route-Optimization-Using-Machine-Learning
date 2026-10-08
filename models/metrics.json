@@ -1,0 +1,462 @@
+{
+  "results": {
+    "baselines": {
+      "persistence_lag_1h": {
+        "train": {
+          "rows": 491141,
+          "mae": 4.066,
+          "rmse": 6.6167,
+          "r2": 0.8377,
+          "median_abs_error": 2.0717,
+          "bias": -0.0542
+        },
+        "val": {
+          "rows": 101264,
+          "mae": 3.9462,
+          "rmse": 6.5933,
+          "r2": 0.8559,
+          "median_abs_error": 1.9691,
+          "bias": -0.0457
+        },
+        "test": {
+          "rows": 94612,
+          "mae": 3.7787,
+          "rmse": 6.3124,
+          "r2": 0.8687,
+          "median_abs_error": 1.8658,
+          "bias": -0.0598
+        }
+      },
+      "link_hour_profile": {
+        "train": {
+          "rows": 491141,
+          "mae": 7.7614,
+          "rmse": 11.0173,
+          "r2": 0.5499,
+          "median_abs_error": 5.0357,
+          "bias": -0.5372
+        },
+        "val": {
+          "rows": 101264,
+          "mae": 7.0911,
+          "rmse": 10.2652,
+          "r2": 0.6506,
+          "median_abs_error": 4.3141,
+          "bias": -1.7651
+        },
+        "test": {
+          "rows": 94612,
+          "mae": 6.6449,
+          "rmse": 9.9187,
+          "r2": 0.6758,
+          "median_abs_error": 3.8713,
+          "bias": -1.2538
+        }
+      }
+    },
+    "models": {
+      "linear_regression": {
+        "train": {
+          "rows": 491141,
+          "mae": 3.7078,
+          "rmse": 5.6031,
+          "r2": 0.8836,
+          "median_abs_error": 2.2454,
+          "bias": 0.0
+        },
+        "val": {
+          "rows": 101264,
+          "mae": 3.5748,
+          "rmse": 5.6279,
+          "r2": 0.895,
+          "median_abs_error": 2.0409,
+          "bias": 0.0955
+        },
+        "test": {
+          "rows": 94612,
+          "mae": 3.4017,
+          "rmse": 5.3303,
+          "r2": 0.9064,
+          "median_abs_error": 1.9471,
+          "bias": 0.0453
+        }
+      },
+      "random_forest": {
+        "train": {
+          "rows": 491141,
+          "mae": 2.7424,
+          "rmse": 4.45,
+          "r2": 0.9266,
+          "median_abs_error": 1.5016,
+          "bias": 0.0304
+        },
+        "val": {
+          "rows": 101264,
+          "mae": 3.333,
+          "rmse": 5.4085,
+          "r2": 0.903,
+          "median_abs_error": 1.812,
+          "bias": 0.1059
+        },
+        "test": {
+          "rows": 94612,
+          "mae": 3.0964,
+          "rmse": 5.0095,
+          "r2": 0.9173,
+          "median_abs_error": 1.6997,
+          "bias": 0.0431
+        }
+      }
+    }
+  },
+  "congestion_thresholds": {
+    "high_congestion_below_mph": 31.5292,
+    "low_congestion_above_mph": 48.0467,
+    "derived_from": "training period hourly mean speed",
+    "train_speed_median_mph": 41.4708,
+    "train_rows": 491141
+  },
+  "congestion_distribution_test": {
+    "High": 0.3572,
+    "Medium": 0.3023,
+    "Low": 0.3405
+  },
+  "congestion_category_report": {
+    "rows": 94612,
+    "accuracy": 0.8524,
+    "confusion_matrix": {
+      "High": {
+        "High": 30120,
+        "Medium": 3290,
+        "Low": 133
+      },
+      "Medium": {
+        "High": 3530,
+        "Medium": 22875,
+        "Low": 4430
+      },
+      "Low": {
+        "High": 150,
+        "Medium": 2435,
+        "Low": 27649
+      }
+    },
+    "per_category": {
+      "High": {
+        "support": 33800,
+        "share": 0.3572,
+        "recall": 0.8911,
+        "precision": 0.898
+      },
+      "Medium": {
+        "support": 28600,
+        "share": 0.3023,
+        "recall": 0.7998,
+        "precision": 0.7419
+      },
+      "Low": {
+        "support": 32212,
+        "share": 0.3405,
+        "recall": 0.8583,
+        "precision": 0.9145
+      }
+    }
+  },
+  "coefficients": [
+    {
+      "feature": "speed_lag_1h",
+      "coefficient": 0.7231,
+      "std_coefficient": 0.7225,
+      "feature_std": 16.4072
+    },
+    {
+      "feature": "speed_roll_24h",
+      "coefficient": 0.1692,
+      "std_coefficient": 0.1362,
+      "feature_std": 13.2166
+    },
+    {
+      "feature": "speed_lag_24h",
+      "coefficient": 0.1345,
+      "std_coefficient": 0.1323,
+      "feature_std": 16.1614
+    },
+    {
+      "feature": "speed_lag_168h",
+      "coefficient": 0.1323,
+      "std_coefficient": 0.1273,
+      "feature_std": 15.7935
+    },
+    {
+      "feature": "speed_lag_2h",
+      "coefficient": -0.1187,
+      "std_coefficient": -0.1178,
+      "feature_std": 16.3073
+    },
+    {
+      "feature": "link_hour_speed_profile_enc",
+      "coefficient": 0.1375,
+      "std_coefficient": 0.1057,
+      "feature_std": 12.6198
+    },
+    {
+      "feature": "link_speed_profile_enc",
+      "coefficient": -0.1519,
+      "std_coefficient": -0.1011,
+      "feature_std": 10.9322
+    },
+    {
+      "feature": "hour_cos",
+      "coefficient": 0.7539,
+      "std_coefficient": 0.0324,
+      "feature_std": 0.7048
+    },
+    {
+      "feature": "is_weekend",
+      "coefficient": 1.0592,
+      "std_coefficient": 0.029,
+      "feature_std": 0.4497
+    },
+    {
+      "feature": "speed_roll_3h",
+      "coefficient": -0.0284,
+      "std_coefficient": -0.0273,
+      "feature_std": 15.77
+    },
+    {
+      "feature": "hour_sin",
+      "coefficient": -0.5293,
+      "std_coefficient": -0.0228,
+      "feature_std": 0.7086
+    },
+    {
+      "feature": "speed_roll_6h",
+      "coefficient": 0.0138,
+      "std_coefficient": 0.0127,
+      "feature_std": 15.0562
+    },
+    {
+      "feature": "dow_cos",
+      "coefficient": -0.2679,
+      "std_coefficient": -0.0115,
+      "feature_std": 0.7053
+    },
+    {
+      "feature": "speed_lag_3h",
+      "coefficient": -0.0115,
+      "std_coefficient": -0.0114,
+      "feature_std": 16.2555
+    },
+    {
+      "feature": "day_of_week",
+      "coefficient": -0.069,
+      "std_coefficient": -0.0083,
+      "feature_std": 1.9757
+    },
+    {
+      "feature": "hour",
+      "coefficient": -0.0136,
+      "std_coefficient": -0.0057,
+      "feature_std": 6.8295
+    },
+    {
+      "feature": "borough_Manhattan",
+      "coefficient": -0.1648,
+      "std_coefficient": -0.0035,
+      "feature_std": 0.3479
+    },
+    {
+      "feature": "borough_Queens",
+      "coefficient": -0.0781,
+      "std_coefficient": -0.0023,
+      "feature_std": 0.4799
+    },
+    {
+      "feature": "dow_sin",
+      "coefficient": 0.0445,
+      "std_coefficient": 0.0019,
+      "feature_std": 0.7087
+    },
+    {
+      "feature": "month",
+      "coefficient": 0.0076,
+      "std_coefficient": 0.0019,
+      "feature_std": 4.0468
+    }
+  ],
+  "random_forest_importances": [
+    {
+      "feature": "speed_lag_1h",
+      "importance": 0.50036
+    },
+    {
+      "feature": "speed_roll_3h",
+      "importance": 0.17594
+    },
+    {
+      "feature": "speed_lag_24h",
+      "importance": 0.11196
+    },
+    {
+      "feature": "speed_lag_2h",
+      "importance": 0.0913
+    },
+    {
+      "feature": "speed_lag_168h",
+      "importance": 0.05
+    },
+    {
+      "feature": "speed_lag_3h",
+      "importance": 0.01198
+    },
+    {
+      "feature": "speed_roll_6h",
+      "importance": 0.01081
+    },
+    {
+      "feature": "link_hour_speed_profile_enc",
+      "importance": 0.00994
+    },
+    {
+      "feature": "speed_roll_24h",
+      "importance": 0.00788
+    },
+    {
+      "feature": "hour_cos",
+      "importance": 0.00542
+    },
+    {
+      "feature": "hour_sin",
+      "importance": 0.00426
+    },
+    {
+      "feature": "segment_length_miles",
+      "importance": 0.00377
+    },
+    {
+      "feature": "link_speed_profile_enc",
+      "importance": 0.00367
+    },
+    {
+      "feature": "hour",
+      "importance": 0.00363
+    },
+    {
+      "feature": "dow_sin",
+      "importance": 0.00211
+    },
+    {
+      "feature": "month",
+      "importance": 0.00205
+    },
+    {
+      "feature": "day_of_week",
+      "importance": 0.00193
+    },
+    {
+      "feature": "dow_cos",
+      "importance": 0.00116
+    },
+    {
+      "feature": "borough_Queens",
+      "importance": 0.00057
+    },
+    {
+      "feature": "is_weekend",
+      "importance": 0.00052
+    }
+  ],
+  "max_vif": 154.664,
+  "max_vif_feature": "speed_roll_3h",
+  "residual_diagnostics": {
+    "mean_residual_by_hour": {
+      "0": -0.404,
+      "1": -0.183,
+      "2": -0.034,
+      "3": 0.383,
+      "4": 0.562,
+      "5": -0.674,
+      "6": -2.266,
+      "7": -0.356,
+      "8": 0.402,
+      "9": 1.167,
+      "10": 0.495,
+      "11": 0.527,
+      "12": 0.898,
+      "13": 0.565,
+      "14": -0.209,
+      "15": -0.564,
+      "16": -0.378,
+      "17": -0.237,
+      "18": 0.589,
+      "19": 0.762,
+      "20": 0.306,
+      "21": 0.214,
+      "22": -0.48,
+      "23": -0.185
+    },
+    "mean_residual_by_weekday": {
+      "0": 0.158,
+      "1": -0.026,
+      "2": 0.074,
+      "3": -0.211,
+      "4": 0.166,
+      "5": 0.165,
+      "6": -0.014
+    },
+    "worst_links": [
+      {
+        "link_id": 4616309,
+        "mae": 9.387,
+        "rows": 227
+      },
+      {
+        "link_id": 4616320,
+        "mae": 9.275,
+        "rows": 78
+      },
+      {
+        "link_id": 4616310,
+        "mae": 9.02,
+        "rows": 260
+      },
+      {
+        "link_id": 4456498,
+        "mae": 8.077,
+        "rows": 798
+      },
+      {
+        "link_id": 4456483,
+        "mae": 8.045,
+        "rows": 85
+      },
+      {
+        "link_id": 4362250,
+        "mae": 6.443,
+        "rows": 997
+      },
+      {
+        "link_id": 4616328,
+        "mae": 6.14,
+        "rows": 575
+      },
+      {
+        "link_id": 4620298,
+        "mae": 5.678,
+        "rows": 1188
+      },
+      {
+        "link_id": 4616260,
+        "mae": 5.516,
+        "rows": 1254
+      },
+      {
+        "link_id": 4616298,
+        "mae": 5.323,
+        "rows": 376
+      }
+    ]
+  },
+  "random_forest_training_rows": 200000,
+  "elapsed_seconds": 59.0
+}

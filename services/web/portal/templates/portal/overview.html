@@ -1,0 +1,131 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<section class="cards">
+  <div class="card">
+    <div class="card-label">Mean speed</div>
+    <div class="card-value">{{ summary.mean_speed_mph|floatformat:2 }}<span class="unit">mph</span></div>
+    <div class="card-note">network-wide, all observed link-hours</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Link-hours</div>
+    <div class="card-value">{{ summary.link_hours|default:"0" }}</div>
+    <div class="card-note">{{ dataset.observations|default:"0" }} clean observations</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Segments</div>
+    <div class="card-value">{{ summary.segments|default:"0" }}</div>
+    <div class="card-note">{{ dataset.links|default:"0" }} links in the catalogue</div>
+  </div>
+  <div class="card">
+    <div class="card-label">High congestion</div>
+    <div class="card-value">{{ summary.high_share_pct|floatformat:2 }}<span class="unit">%</span></div>
+    <div class="card-note">speed &lt; {{ thresholds.high_congestion_below_mph|floatformat:2 }} mph</div>
+  </div>
+</section>
+
+<h2>Dataset window</h2>
+<div class="panel">
+  <dl class="meta">
+    <div><dt>First hour</dt><dd>{{ dataset.start|default:"—" }}</dd></div>
+    <div><dt>Last hour</dt><dd>{{ dataset.end|default:"—" }}</dd></div>
+    <div><dt>Hours covered</dt><dd>{{ dataset.hours|default:"—" }}</dd></div>
+    <div><dt>Links observed</dt><dd>{{ dataset.links|default:"—" }}</dd></div>
+    <div><dt>Link-hours</dt><dd>{{ dataset.link_hours|default:"—" }}</dd></div>
+    <div><dt>Observations</dt><dd>{{ dataset.observations|default:"—" }}</dd></div>
+    <div><dt>Congestion thresholds</dt><dd>
+      {% if thresholds.high_congestion_below_mph %}
+        &lt; {{ thresholds.high_congestion_below_mph|floatformat:2 }} / &ge; {{ thresholds.low_congestion_above_mph|floatformat:2 }} mph
+      {% else %}—{% endif %}
+    </dd></div>
+    <div><dt>Model features</dt><dd>{{ model_info.feature_count|default:"—" }} · target {{ model_info.target|default:"—" }}</dd></div>
+  </dl>
+</div>
+
+<h2>Congestion by borough</h2>
+{% if boroughs %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Borough</th>
+        <th class="num">Segments</th>
+        <th class="num">Mean speed (mph)</th>
+        <th class="num">High congestion</th>
+        <th class="num">Low congestion</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in boroughs %}
+      <tr>
+        <td><a href="{% url 'portal:segments' %}?borough={{ row.borough|urlencode }}">{{ row.borough }}</a></td>
+        <td class="num">{{ row.segments }}</td>
+        <td class="num">{{ row.mean_speed_mph|floatformat:2 }}</td>
+        <td class="num">{{ row.high_congestion_share_pct|floatformat:1 }}%</td>
+        <td class="num">{{ row.low_congestion_share_pct|floatformat:1 }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No borough statistics available.</p>
+{% endif %}
+
+<h2>Top 10 most congested segments</h2>
+{% if segments %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Segment</th>
+        <th>Borough</th>
+        <th class="num">Mean speed (mph)</th>
+        <th class="num">High congestion share</th>
+        <th class="num">Link-hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in segments %}
+      <tr>
+        <td><a href="{% url 'portal:segment_detail' row.link_id %}">{{ row.link_name|default:"unnamed" }}</a>
+          <span class="pill pill-split">{{ row.link_id }}</span></td>
+        <td>{{ row.borough|default:"—" }}</td>
+        <td class="num">{{ row.mean_speed_mph|floatformat:2 }}</td>
+        <td class="num">{{ row.high_congestion_share_pct|floatformat:1 }}%</td>
+        <td class="num">{{ row.link_hours }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No congestion ranking available.</p>
+{% endif %}
+
+<h2>Model headline (test split)</h2>
+{% if headline %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Model</th><th class="num">Rows</th><th class="num">MAE (mph)</th><th class="num">RMSE (mph)</th><th class="num">R²</th></tr>
+    </thead>
+    <tbody>
+      {% for row in headline %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td class="num">{{ row.rows|default:"—" }}</td>
+        <td class="num">{{ row.mae|floatformat:3 }}</td>
+        <td class="num">{{ row.rmse|floatformat:3 }}</td>
+        <td class="num">{{ row.r2|floatformat:4 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="note">Full metrics, coefficients and diagnostics: <a href="{% url 'portal:model_performance' %}">model performance</a>.</p>
+{% else %}
+<p class="empty">Model metrics unavailable.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+{% if not metrics.available %}
+<p class="empty">Model metrics are unavailable — the Flask API returned no metrics payload.</p>
+{% else %}
+
+<h2>Predictor metrics by split</h2>
+{% if metric_rows %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Group</th>
+        <th>Predictor</th>
+        <th>Split</th>
+        <th class="num">Rows</th>
+        <th class="num">MAE (mph)</th>
+        <th class="num">RMSE (mph)</th>
+        <th class="num">R²</th>
+        <th class="num">Median abs. error</th>
+        <th class="num">Bias</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in metric_rows %}
+      <tr>
+        <td>{{ row.group }}</td>
+        <td>{{ row.name }}</td>
+        <td><span class="pill pill-split">{{ row.split }}</span></td>
+        <td class="num">{{ row.rows|default:"—" }}</td>
+        <td class="num">{{ row.mae|floatformat:3 }}</td>
+        <td class="num">{{ row.rmse|floatformat:3 }}</td>
+        <td class="num">{{ row.r2|floatformat:4 }}</td>
+        <td class="num">{{ row.median_abs_error|floatformat:3 }}</td>
+        <td class="num">{{ row.bias|floatformat:3 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="note">Max VIF {{ metrics.max_vif|floatformat:2 }} ({{ metrics.max_vif_feature|default:"—" }}); congestion thresholds
+  {{ metrics.congestion_thresholds.high_congestion_below_mph|floatformat:2 }} /
+  {{ metrics.congestion_thresholds.low_congestion_above_mph|floatformat:2 }} mph.</p>
+{% else %}
+<p class="empty">No predictor metrics available.</p>
+{% endif %}
+
+<h2>Congestion category report</h2>
+{% if report.rows %}
+<p class="note">{{ report.rows }} test rows · accuracy {{ report.accuracy|floatformat:4 }}.</p>
+<div class="cols">
+  <div>
+    <h3>Per category</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Category</th><th class="num">Support</th><th class="num">Share</th><th class="num">Recall</th><th class="num">Precision</th></tr>
+        </thead>
+        <tbody>
+          {% for row in category_rows %}
+          <tr>
+            <td><span class="pill pill-{{ row.name|lower }}">{{ row.name }}</span></td>
+            <td class="num">{{ row.support|default:"—" }}</td>
+            <td class="num">{{ row.share|floatformat:4 }}</td>
+            <td class="num">{{ row.recall|floatformat:4 }}</td>
+            <td class="num">{{ row.precision|floatformat:4 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <h3>Confusion matrix (rows = actual)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Actual \ Predicted</th>{% for name in categories %}<th class="num">{{ name }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          {% for row in confusion_rows %}
+          <tr>
+            <td><span class="pill pill-{{ row.actual|lower }}">{{ row.actual }}</span></td>
+            {% for cell in row.cells %}<td class="num">{{ cell }}</td>{% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<p class="empty">No congestion category report available.</p>
+{% endif %}
+
+<h2>Top 12 standardised coefficients</h2>
+{% if coefficients %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Feature</th><th class="num">Coefficient</th><th class="num">Std. coefficient</th><th class="num">Feature std.</th></tr>
+    </thead>
+    <tbody>
+      {% for row in coefficients %}
+      <tr>
+        <td>{{ row.feature }}</td>
+        <td class="num">{{ row.coefficient|floatformat:4 }}</td>
+        <td class="num">{{ row.std_coefficient|floatformat:4 }}</td>
+        <td class="num">{{ row.feature_std|floatformat:4 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No coefficients available.</p>
+{% endif %}
+
+<h2>Random forest importances (top 12)</h2>
+{% if importances %}
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th class="num">Importance</th></tr></thead>
+    <tbody>
+      {% for row in importances %}
+      <tr><td>{{ row.feature }}</td><td class="num">{{ row.importance|floatformat:5 }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No random-forest importances available.</p>
+{% endif %}
+
+<h2>Worst segments by error</h2>
+{% if worst_links %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Segment</th><th>Borough</th><th class="num">MAE (mph)</th><th class="num">Rows</th></tr>
+    </thead>
+    <tbody>
+      {% for row in worst_links %}
+      <tr>
+        <td><a href="{% url 'portal:segment_detail' row.link_id %}">{{ row.link_name|default:"unnamed" }}</a>
+          <span class="pill pill-split">{{ row.link_id }}</span></td>
+        <td>{{ row.borough|default:"—" }}</td>
+        <td class="num">{{ row.mae_mph|floatformat:3 }}</td>
+        <td class="num">{{ row.link_hours }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No per-segment errors available.</p>
+{% endif %}
+
+<h2>Residual diagnostics</h2>
+<div class="cols">
+  <div>
+    <h3>Mean residual by hour</h3>
+    {% if residual_hours %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Hour</th><th class="num">Mean residual (mph)</th></tr></thead>
+        <tbody>
+          {% for row in residual_hours %}
+          <tr><td>{{ row.label }}</td><td class="num">{{ row.value|floatformat:3 }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty">No hourly residuals available.</p>
+    {% endif %}
+  </div>
+  <div>
+    <h3>Mean residual by weekday</h3>
+    {% if residual_weekdays %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Weekday</th><th class="num">Mean residual (mph)</th></tr></thead>
+        <tbody>
+          {% for row in residual_weekdays %}
+          <tr><td>{{ row.label }}</td><td class="num">{{ row.value|floatformat:3 }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty">No weekday residuals available.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}

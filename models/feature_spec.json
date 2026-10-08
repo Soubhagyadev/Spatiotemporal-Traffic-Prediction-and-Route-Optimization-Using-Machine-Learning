@@ -1,0 +1,119 @@
+{
+  "target": "speed_mean",
+  "feature_columns": [
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos",
+    "speed_lag_1h",
+    "speed_lag_2h",
+    "speed_lag_3h",
+    "speed_lag_24h",
+    "speed_lag_168h",
+    "speed_roll_3h",
+    "speed_roll_6h",
+    "speed_roll_24h",
+    "segment_length_miles",
+    "link_speed_profile_enc",
+    "link_hour_speed_profile_enc",
+    "borough_Brooklyn",
+    "borough_Manhattan",
+    "borough_Queens",
+    "borough_Staten Island"
+  ],
+  "calendar_features": [
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos"
+  ],
+  "lag_hours": [
+    1,
+    2,
+    3,
+    24,
+    168
+  ],
+  "rolling_windows": [
+    3,
+    6,
+    24
+  ],
+  "encoding_columns": [
+    "link_speed_profile_enc",
+    "link_hour_speed_profile_enc"
+  ],
+  "imputation_medians": {
+    "hour": 12.0,
+    "day_of_week": 3.0,
+    "month": 5.0,
+    "is_weekend": 0.0,
+    "hour_sin": 0.0,
+    "hour_cos": -1.8369701987210297e-16,
+    "dow_sin": 0.0,
+    "dow_cos": -0.22252093395631434,
+    "speed_lag_1h": 41.5225,
+    "speed_lag_2h": 41.6783,
+    "speed_lag_3h": 41.7808,
+    "speed_lag_24h": 41.6775,
+    "speed_lag_168h": 41.7325,
+    "speed_roll_3h": 40.711400000000005,
+    "speed_roll_6h": 40.125283333333336,
+    "speed_roll_24h": 39.892325,
+    "segment_length_miles": 1.632583,
+    "link_speed_profile_enc": 39.82350032608696,
+    "link_hour_speed_profile_enc": 39.1605762962963,
+    "borough_Brooklyn": 0.0,
+    "borough_Manhattan": 0.0,
+    "borough_Queens": 0.0,
+    "borough_Staten Island": 0.0
+  },
+  "encoding_provenance": [
+    {
+      "encoder": "link_speed_profile",
+      "keys": [
+        "link_id"
+      ],
+      "levels_learned": 110,
+      "fit_rows": 491141,
+      "fit_end_timestamp": "2026-06-22 07:00:00",
+      "train_coverage": 1.0
+    },
+    {
+      "encoder": "link_hour_speed_profile",
+      "keys": [
+        "link_id",
+        "hour"
+      ],
+      "levels_learned": 2523,
+      "fit_rows": 491141,
+      "fit_end_timestamp": "2026-06-22 07:00:00",
+      "train_coverage": 0.9983
+    }
+  ],
+  "split_fractions": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "rows": {
+    "train": 491141,
+    "val": 101264,
+    "test": 94612
+  },
+  "build_info": {
+    "hourly_rows": 719046,
+    "rows_with_enough_observations": 702311,
+    "dropped_thin_rows": 16735,
+    "dropped_without_previous_hour": 15294,
+    "rows_modelled": 687017
+  }
+}

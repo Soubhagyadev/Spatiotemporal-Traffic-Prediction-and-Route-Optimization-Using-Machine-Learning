@@ -1,0 +1,18 @@
+{
+  "files_read": 242,
+  "files_failed": [],
+  "raw_rows": 12064919,
+  "kept_rows": 8009907,
+  "dropped_rows": 4055012,
+  "dropped_by_reason": {
+    "non_nominal_status": 4055012
+  },
+  "raw_files": 242,
+  "links": 125,
+  "hourly_rows": 719046,
+  "hour_ts_min": "2025-10-07 00:00:00",
+  "hour_ts_max": "2026-10-07 19:00:00",
+  "outlier_records": 1497,
+  "duplicate_records_across_files": 0,
+  "elapsed_seconds": 259.8
+}

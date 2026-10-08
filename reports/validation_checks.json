@@ -1,0 +1,164 @@
+{
+  "summary": {
+    "PASS": 28,
+    "WARN": 3,
+    "FAIL": 0
+  },
+  "checks": [
+    {
+      "name": "missing_values",
+      "status": "PASS",
+      "detail": "missing counts in key columns: {'link_id': 0, 'hour_ts': 0, 'obs_count': 0, 'speed_mean': 0, 'travel_time_mean': 0} (speed_std is NaN for single-observation hours by construction)"
+    },
+    {
+      "name": "duplicate_link_hours",
+      "status": "PASS",
+      "detail": "0 duplicated (link_id, hour_ts) pairs"
+    },
+    {
+      "name": "timestamp_ordering",
+      "status": "PASS",
+      "detail": "hour_ts monotonic increasing: True; range 2025-10-07 00:00:00 .. 2026-10-07 19:00:00"
+    },
+    {
+      "name": "hourly_resolution",
+      "status": "PASS",
+      "detail": "0 rows not aligned to a whole hour (distinct hours: 8,381)"
+    },
+    {
+      "name": "non_positive_values",
+      "status": "PASS",
+      "detail": "zero/negative values per column: {'obs_count': 0, 'speed_mean': 0, 'travel_time_mean': 0}"
+    },
+    {
+      "name": "thin_hourly_groups",
+      "status": "PASS",
+      "detail": "16,735 link-hours (2.33%) have fewer than 3 observations and are excluded from modelling"
+    },
+    {
+      "name": "speed_outliers",
+      "status": "PASS",
+      "detail": "67 hourly means outside [1, 90] mph; p0.1=1.55 p99.9=73.68"
+    },
+    {
+      "name": "insufficient_observations_per_link",
+      "status": "WARN",
+      "detail": "1 of 125 links have fewer than 336 observed hours, of which 15 have no usable hour at all (every record was stale/invalid): [4616203, 4616215, 4616255, 4616323, 4616324, 4616325]"
+    },
+    {
+      "name": "links_without_predictions",
+      "status": "WARN",
+      "detail": "15 of 125 segments appear in the raw exports but have no valid hourly aggregate, so they cannot be predicted: [4616203, 4616215, 4616255, 4616323, 4616324, 4616325, 4616337, 4616338, 4616346, 4620343, 4763649, 4763650, 4763652, 4763655, 4763657]"
+    },
+    {
+      "name": "hourly_panel_balance",
+      "status": "PASS",
+      "detail": "107-110 of 110 segments report in each hour-of-day bucket (97% balance), so the diurnal speed profile is not an artefact of a changing set of reporting segments"
+    },
+    {
+      "name": "temporal_coverage_per_link",
+      "status": "PASS",
+      "detail": "median share of hours present inside each link's own time span: 88.4% (p10 55.1%)"
+    },
+    {
+      "name": "implied_length_outliers",
+      "status": "PASS",
+      "detail": "1,497 of 8,009,907 clean records (0.019%) deviate more than 30% from their link's median implied length and were removed"
+    },
+    {
+      "name": "duplicate_records",
+      "status": "PASS",
+      "detail": "0 repeated (link_id, timestamp) records were dropped after per-link de-duplication"
+    },
+    {
+      "name": "implied_vs_geometric_length",
+      "status": "PASS",
+      "detail": "79.1% of 110 links have sensor-implied length within \u00b125% of the decoded polyline length (median ratio 0.986); mismatches are expected for tunnels, bridges and ramp segments and are reported, not filtered"
+    },
+    {
+      "name": "segment_geometry",
+      "status": "WARN",
+      "detail": "119/125 links have a complete decoded polyline; the rest fall back to the 255-character truncated link_points"
+    },
+    {
+      "name": "chronological_split",
+      "status": "PASS",
+      "detail": "train: 2025-10-07 01:00:00 .. 2026-06-22 07:00:00; val: 2026-06-22 08:00:00 .. 2026-08-15 22:00:00; test: 2026-08-15 23:00:00 .. 2026-10-07 19:00:00 | strictly ordered, no overlap: True"
+    },
+    {
+      "name": "split_composition",
+      "status": "PASS",
+      "detail": "rows train/val/test = 491,141/101,264/94,612; 94 links appear in both train and test (expected: the same road network is observed in every period, and no target value is shared)"
+    },
+    {
+      "name": "target_not_a_feature",
+      "status": "PASS",
+      "detail": "target 'speed_mean' present in feature list: False"
+    },
+    {
+      "name": "no_target_derived_features",
+      "status": "PASS",
+      "detail": "features derived from the modelled quantity: none"
+    },
+    {
+      "name": "encoding_from_training_period_only[link_speed_profile]",
+      "status": "PASS",
+      "detail": "110 levels learned from 491,141 training rows, last timestamp used 2026-06-22 07:00:00 (training ends 2026-06-22 07:00:00); coverage 100.0%"
+    },
+    {
+      "name": "encoding_from_training_period_only[link_hour_speed_profile]",
+      "status": "PASS",
+      "detail": "2,523 levels learned from 491,141 training rows, last timestamp used 2026-06-22 07:00:00 (training ends 2026-06-22 07:00:00); coverage 99.8%"
+    },
+    {
+      "name": "features_have_variance",
+      "status": "PASS",
+      "detail": "0 of 23 features are constant on the training period and would carry no information: none"
+    },
+    {
+      "name": "feature_missingness",
+      "status": "PASS",
+      "detail": "share of missing feature cells: train=0.00%, val=0.00%, test=0.00% (missing values are imputed from training-period statistics)"
+    },
+    {
+      "name": "duplicate_rows_train",
+      "status": "PASS",
+      "detail": "0 duplicated (link_id, hour_ts) rows in the train split"
+    },
+    {
+      "name": "duplicate_rows_val",
+      "status": "PASS",
+      "detail": "0 duplicated (link_id, hour_ts) rows in the val split"
+    },
+    {
+      "name": "duplicate_rows_test",
+      "status": "PASS",
+      "detail": "0 duplicated (link_id, hour_ts) rows in the test split"
+    },
+    {
+      "name": "lag_provenance[speed_lag_1h]",
+      "status": "PASS",
+      "detail": "19,628/20,000 sampled values reference a link-hour kept in the modelling frame and all reproduce the observed speed of the same link 1h earlier exactly (0 mismatches, max |difference| 0.000000 mph); the rest point at link-hours removed by the observation-count filter"
+    },
+    {
+      "name": "lag_provenance[speed_lag_2h]",
+      "status": "PASS",
+      "detail": "19,297/20,000 sampled values reference a link-hour kept in the modelling frame and all reproduce the observed speed of the same link 2h earlier exactly (0 mismatches, max |difference| 0.000000 mph); the rest point at link-hours removed by the observation-count filter"
+    },
+    {
+      "name": "lag_provenance[speed_lag_3h]",
+      "status": "PASS",
+      "detail": "19,051/20,000 sampled values reference a link-hour kept in the modelling frame and all reproduce the observed speed of the same link 3h earlier exactly (0 mismatches, max |difference| 0.000000 mph); the rest point at link-hours removed by the observation-count filter"
+    },
+    {
+      "name": "lag_provenance[speed_lag_24h]",
+      "status": "PASS",
+      "detail": "18,695/20,000 sampled values reference a link-hour kept in the modelling frame and all reproduce the observed speed of the same link 24h earlier exactly (0 mismatches, max |difference| 0.000000 mph); the rest point at link-hours removed by the observation-count filter"
+    },
+    {
+      "name": "lag_provenance[speed_lag_168h]",
+      "status": "PASS",
+      "detail": "17,374/20,000 sampled values reference a link-hour kept in the modelling frame and all reproduce the observed speed of the same link 168h earlier exactly (0 mismatches, max |difference| 0.000000 mph); the rest point at link-hours removed by the observation-count filter"
+    }
+  ]
+}

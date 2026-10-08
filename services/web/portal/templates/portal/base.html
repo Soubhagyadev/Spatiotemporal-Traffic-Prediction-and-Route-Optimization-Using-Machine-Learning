@@ -1,0 +1,49 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title|default:"Traffic portal" }} · NYC Traffic Portal</title>
+  <link rel="stylesheet" href="{% static 'portal/style.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      NYC Traffic
+      <span>Spatiotemporal traffic prediction &amp; congestion analytics</span>
+    </div>
+    <nav class="nav">
+      <a href="{% url 'portal:overview' %}"{% if active == 'overview' %} class="active"{% endif %}>Overview</a>
+      <a href="{% url 'portal:segments' %}"{% if active == 'segments' %} class="active"{% endif %}>Segments</a>
+      <a href="{% url 'portal:predict' %}"{% if active == 'predict' %} class="active"{% endif %}>Predict</a>
+      <a href="{% url 'portal:model_performance' %}"{% if active == 'model' %} class="active"{% endif %}>Model</a>
+      <a href="{% url 'portal:about' %}"{% if active == 'about' %} class="active"{% endif %}>About</a>
+      <a href="{{ dashboard_url }}" class="nav-external">Analytics dashboard →</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    {% if not api_available %}
+      <div class="banner banner-error">
+        <strong>Traffic API unreachable.</strong>
+        No data could be loaded from the Flask API, so the tables below are empty.
+        Start it with <code>python -m services.api.app</code> and reload.
+        {% if api_error %}<div class="banner-detail">{{ api_error }}</div>{% endif %}
+      </div>
+    {% elif api_error %}
+      <div class="banner banner-warn">
+        <strong>Some data could not be loaded.</strong>
+        <div class="banner-detail">{{ api_error }}</div>
+      </div>
+    {% endif %}
+
+    <h1>{{ title }}</h1>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Spatiotemporal Traffic Prediction and Route Optimization — Part 2 Django interface.
+    All figures are served by the Flask API from the Part 1 pipeline output.
+  </footer>
+</body>
+</html>

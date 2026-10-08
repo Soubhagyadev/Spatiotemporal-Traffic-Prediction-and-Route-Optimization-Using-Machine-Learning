@@ -1,0 +1,77 @@
+{
+  "sampled_files": 24,
+  "sampled_file_names": [
+    "traffic_0001.csv",
+    "traffic_0011.csv",
+    "traffic_0022.csv",
+    "traffic_0032.csv",
+    "traffic_0043.csv",
+    "traffic_0053.csv",
+    "traffic_0064.csv",
+    "traffic_0074.csv",
+    "traffic_0085.csv",
+    "traffic_0095.csv",
+    "traffic_0106.csv",
+    "traffic_0116.csv",
+    "traffic_0127.csv",
+    "traffic_0137.csv",
+    "traffic_0148.csv",
+    "traffic_0158.csv",
+    "traffic_0169.csv",
+    "traffic_0179.csv",
+    "traffic_0190.csv",
+    "traffic_0200.csv",
+    "traffic_0211.csv",
+    "traffic_0221.csv",
+    "traffic_0232.csv",
+    "traffic_0242.csv"
+  ],
+  "rows_sampled": 1164919,
+  "missing_values": {
+    "speed": 0,
+    "travel_time": 0,
+    "status": 0,
+    "data_as_of": 0,
+    "link_id": 0
+  },
+  "non_numeric_values": {
+    "speed": 0,
+    "travel_time": 0
+  },
+  "negative_values": {
+    "speed": 0,
+    "travel_time": 12
+  },
+  "zero_values": {
+    "speed": 303569,
+    "travel_time": 303492
+  },
+  "status_counts": {
+    "0": 783645,
+    "-101": 381274
+  },
+  "unparsable_timestamps": 0,
+  "duplicate_records_in_sample": 0,
+  "chunks_out_of_order": 0,
+  "distinct_link_ids": 125,
+  "timestamp_min": "2025-10-07 00:02:12",
+  "timestamp_max": "2026-10-07 19:46:06",
+  "speed_quantiles": {
+    "0.01": 0.0,
+    "0.25": 0.0,
+    "0.5": 27.96,
+    "0.75": 47.84,
+    "0.99": 64.62,
+    "0.999": 91.96
+  },
+  "travel_time_quantiles": {
+    "0.01": 0.0,
+    "0.25": 0.0,
+    "0.5": 118.0,
+    "0.75": 233.0,
+    "0.99": 2409.82,
+    "0.999": 5011.082
+  },
+  "speed_max": 119.92,
+  "travel_time_max": 10292.0
+}

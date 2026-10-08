@@ -1,0 +1,57 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<div class="panel">
+  <h3>What this system is</h3>
+  <p>The portal turns the Part 1 machine-learning pipeline into a browsable, queryable service.
+    A Flask API exposes the cleaned traffic database and the trained speed models as JSON; this Django
+    application renders that API as dashboards, segment pages and on-demand forecasts.</p>
+  <p>Congestion labels follow the thresholds derived from the training period
+    (&lt; {{ thresholds.high_congestion_below_mph|default:"31.53" }} mph is <strong>High</strong>,
+    &ge; {{ thresholds.low_congestion_above_mph|default:"48.05" }} mph is <strong>Low</strong>, everything between is
+    <strong>Medium</strong>), so every label on this site is directly comparable with the model report.</p>
+</div>
+
+<div class="panel">
+  <h3>Part 1 pipeline</h3>
+  <dl class="meta">
+    <div><dt>Raw records</dt><dd>12,064,919</dd></div>
+    <div><dt>Clean records</dt><dd>8,009,907</dd></div>
+    <div><dt>Link-hour rows</dt><dd>719,046</dd></div>
+    <div><dt>Segments</dt><dd>110 with observations</dd></div>
+    <div><dt>Period</dt><dd>2025-10-07 → 2026-10-07</dd></div>
+    <div><dt>Target</dt><dd>{{ model_info.target|default:"hourly mean speed (mph)" }}</dd></div>
+    <div><dt>Feature count</dt><dd>{{ model_info.feature_count|default:"23" }}</dd></div>
+    <div><dt>Models</dt><dd>{{ model_info.models|join:", "|default:"linear regression, random forest" }}</dd></div>
+    <div><dt>Live dataset window</dt><dd>{{ dataset.start|default:"—" }} → {{ dataset.end|default:"—" }}</dd></div>
+  </dl>
+  <p class="note">Cleaning removes duplicate, out-of-range and geometrically inconsistent records, then aggregates
+    observations into one row per link and hour with lag and rolling-window features.</p>
+</div>
+
+<div class="panel">
+  <h3>Architecture</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td>Model + data API</td><td>Flask (port 5001)</td><td>Reads the SQLite/Parquet outputs, serves links, congestion, metrics and predictions as JSON.</td></tr>
+        <tr><td>Web interface</td><td>Django (this app)</td><td>Server-rendered dashboards, segment explorer, forecast form.</td></tr>
+        <tr><td>Analyst dashboard</td><td>Dash</td><td>Interactive cross-filtering for exploratory analysis.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">This Django layer holds no models and no database tables: it is a presentation client of the API,
+    with a cached HTTP client and graceful degradation when the API is down.</p>
+</div>
+
+<div class="panel">
+  <h3>Static reports</h3>
+  <ul>
+    <li><a href="/reports/validation_report.md">/reports/validation_report.md</a> — data-quality checks on the raw and clean tables.</li>
+    <li><a href="/reports/model_report.md">/reports/model_report.md</a> — baseline and model comparison, coefficients, diagnostics.</li>
+  </ul>
+  <p class="note">These files live in the repository under <code>reports/</code> and are not served by this app.</p>
+</div>
+
+{% endblock %}

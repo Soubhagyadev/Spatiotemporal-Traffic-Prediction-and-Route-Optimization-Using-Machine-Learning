@@ -1,0 +1,118 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<p class="note"><a href="{% url 'portal:segments' %}">← back to segments</a></p>
+
+<div class="panel">
+  <dl class="meta">
+    <div><dt>Link id</dt><dd>{{ link.link_id }}</dd></div>
+    <div><dt>Name</dt><dd>{{ link.link_name|default:"unnamed" }}</dd></div>
+    <div><dt>Borough</dt><dd>{{ link.borough|default:"—" }}</dd></div>
+    <div><dt>Owner</dt><dd>{{ link.owner|default:"—" }}</dd></div>
+    <div><dt>Start coordinates</dt><dd>{{ link.start_lat|floatformat:5 }}, {{ link.start_lon|floatformat:5 }}</dd></div>
+    <div><dt>End coordinates</dt><dd>{{ link.end_lat|floatformat:5 }}, {{ link.end_lon|floatformat:5 }}</dd></div>
+    <div><dt>Polyline length</dt><dd>{{ link.geom_length_miles|floatformat:4 }} mi</dd></div>
+    <div><dt>Implied length</dt><dd>{{ link.implied_length_miles|floatformat:4 }} mi</dd></div>
+    <div><dt>Geometry source</dt><dd>{{ link.geometry_source|default:"—" }}</dd></div>
+    <div><dt>Geometry complete</dt><dd>{% if link.geometry_complete %}yes{% else %}no{% endif %}</dd></div>
+    <div><dt>Hours observed</dt><dd>{{ link.hours_observed|floatformat:0 }}</dd></div>
+    <div><dt>First hour</dt><dd>{{ link.first_hour_ts|default:"—" }}</dd></div>
+    <div><dt>Last hour</dt><dd>{{ link.last_hour_ts|default:"—" }}</dd></div>
+    <div><dt>Mean speed</dt><dd>{{ link.mean_speed_mph|floatformat:2 }} mph</dd></div>
+  </dl>
+</div>
+
+<h2>Congestion summary</h2>
+<section class="cards">
+  <div class="card">
+    <div class="card-label">Mean speed</div>
+    <div class="card-value">{{ summary.mean_speed_mph|floatformat:2 }}<span class="unit">mph</span></div>
+    <div class="card-note">{{ summary.link_hours|default:"0" }} link-hours</div>
+  </div>
+  <div class="card">
+    <div class="card-label">High congestion</div>
+    <div class="card-value">{{ summary.high_share_pct|floatformat:1 }}<span class="unit">%</span></div>
+    <div class="card-note">{{ summary.high|default:"0" }} link-hours</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Medium congestion</div>
+    <div class="card-value">{{ summary.medium_share_pct|floatformat:1 }}<span class="unit">%</span></div>
+    <div class="card-note">{{ summary.medium|default:"0" }} link-hours</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Low congestion</div>
+    <div class="card-value">{{ summary.low_share_pct|floatformat:1 }}<span class="unit">%</span></div>
+    <div class="card-note">{{ summary.low|default:"0" }} link-hours</div>
+  </div>
+</section>
+
+<h2>Hourly speed history</h2>
+<div class="chart">{{ chart|safe }}</div>
+<p class="note">Showing the last {{ chart_hours }} of {{ history_hours }} hourly points; the table below stays readable if the Plotly CDN is unavailable.</p>
+
+<h2>24 most recent hourly observations</h2>
+{% if recent_hours %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Hour</th>
+        <th class="num">Mean speed (mph)</th>
+        <th class="num">Median speed (mph)</th>
+        <th class="num">Mean travel time (s)</th>
+        <th class="num">Observations</th>
+        <th class="num">Implied length (mi)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in recent_hours %}
+      <tr>
+        <td>{{ row.hour_ts }}</td>
+        <td class="num">{{ row.speed_mean|floatformat:2 }}</td>
+        <td class="num">{{ row.speed_median|floatformat:2 }}</td>
+        <td class="num">{{ row.travel_time_mean|floatformat:1 }}</td>
+        <td class="num">{{ row.obs_count }}</td>
+        <td class="num">{{ row.implied_length_miles|floatformat:4 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No recent hourly observations available.</p>
+{% endif %}
+
+<h2>6-step forecast</h2>
+{% if forecast %}
+<p class="note">Linear-regression forecast starting at {{ forecast_start }} (last observed hour + 1 h).</p>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="num">Step</th>
+        <th>Hour</th>
+        <th class="num">Predicted speed (mph)</th>
+        <th>Congestion</th>
+        <th>Mode</th>
+        <th class="num">Lags observed</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in forecast %}
+      <tr>
+        <td class="num">{{ row.step }}</td>
+        <td>{{ row.hour_ts }}</td>
+        <td class="num">{{ row.predicted_speed_mph|floatformat:2 }}</td>
+        <td><span class="pill pill-{{ row.congestion|lower }}">{{ row.congestion }}</span></td>
+        <td>{{ row.mode }}</td>
+        <td class="num">{{ row.lags_observed }}/{{ row.lags_total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">Forecast unavailable (the prediction API returned no rows).</p>
+{% endif %}
+
+{% endblock %}

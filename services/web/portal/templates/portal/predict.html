@@ -1,0 +1,85 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<div class="cols">
+  <div class="panel">
+    <h3>Forecast request</h3>
+    <form method="post" action="{% url 'portal:predict' %}">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-row">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}
+        {{ field.errors }}
+      </div>
+      {% endfor %}
+      <button type="submit">Predict</button>
+    </form>
+    <p class="note">A single step uses <code>POST /api/predict</code>; more than one step also calls
+      <code>POST /api/predict/horizon</code>.</p>
+  </div>
+
+  <div class="panel">
+    <h3>Prediction</h3>
+    {% if failure %}
+    <p class="empty">{{ failure }}</p>
+    {% elif prediction %}
+    <section class="cards">
+      <div class="card">
+        <div class="card-label">Predicted speed</div>
+        <div class="card-value">{{ prediction.predicted_speed_mph|floatformat:2 }}<span class="unit">mph</span></div>
+        <div class="card-note">{{ prediction.hour_ts }}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Congestion</div>
+        <div class="card-value"><span class="pill pill-{{ prediction.congestion|lower }}">{{ prediction.congestion }}</span></div>
+        <div class="card-note">model {{ prediction.model }}</div>
+      </div>
+    </section>
+    <dl class="meta">
+      <div><dt>Mode</dt><dd>{{ prediction.mode }}</dd></div>
+      <div><dt>Lag coverage</dt><dd>{{ prediction.lags_observed }}/{{ prediction.lags_total }}</dd></div>
+      <div><dt>History hours available</dt><dd>{{ prediction.history_hours_available }}</dd></div>
+      <div><dt>Hours since last observation</dt><dd>{{ prediction.hours_since_last_observation }}</dd></div>
+      <div><dt>Segment</dt><dd>{{ prediction.link_id }} · {{ prediction.borough }}</dd></div>
+    </dl>
+    {% else %}
+    <p class="empty">Submit the form to score a segment and hour.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% if steps %}
+<h2>Per-step forecast</h2>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="num">Step</th>
+        <th>Hour</th>
+        <th class="num">Predicted speed (mph)</th>
+        <th>Congestion</th>
+        <th>Mode</th>
+        <th class="num">Lags observed</th>
+        <th class="num">Hours since obs.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in steps %}
+      <tr>
+        <td class="num">{{ row.step }}</td>
+        <td>{{ row.hour_ts }}</td>
+        <td class="num">{{ row.predicted_speed_mph|floatformat:2 }}</td>
+        <td><span class="pill pill-{{ row.congestion|lower }}">{{ row.congestion }}</span></td>
+        <td>{{ row.mode }}</td>
+        <td class="num">{{ row.lags_observed }}/{{ row.lags_total }}</td>
+        <td class="num">{{ row.hours_since_last_observation }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "portal/base.html" %}
+{% block content %}
+
+<form class="filters" method="get" action="{% url 'portal:segments' %}">
+  <div>
+    <label for="borough">Borough</label>
+    <select id="borough" name="borough">
+      <option value="">All boroughs</option>
+      {% for name in boroughs %}
+      <option value="{{ name }}"{% if name == selected_borough %} selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label for="q">Search name or link id</label>
+    <input type="text" id="q" name="q" value="{{ query }}" placeholder="e.g. FDR or 4616341">
+  </div>
+  <div>
+    <label for="sort">Sort by</label>
+    <select id="sort" name="sort">
+      <option value="congestion"{% if sort_key == 'congestion' %} selected{% endif %}>Congestion (highest first)</option>
+      <option value="speed"{% if sort_key == 'speed' %} selected{% endif %}>Speed (fastest first)</option>
+      <option value="name"{% if sort_key == 'name' %} selected{% endif %}>Name (A–Z)</option>
+    </select>
+  </div>
+  <button type="submit">Apply</button>
+</form>
+
+<p class="note">{{ rows|length }} segment{{ rows|length|pluralize }} shown
+  {% if selected_borough %}in {{ selected_borough }}{% endif %}
+  {% if query %}matching “{{ query }}”{% endif %}.</p>
+
+{% if rows %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Link id</th>
+        <th>Segment name</th>
+        <th>Borough</th>
+        <th>Owner</th>
+        <th class="num">Mean speed (mph)</th>
+        <th class="num">High congestion share</th>
+        <th class="num">Hours observed</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.link_id }}</td>
+        <td><a href="{% url 'portal:segment_detail' row.link_id %}">{{ row.link_name|default:"unnamed" }}</a></td>
+        <td>{{ row.borough|default:"—" }}</td>
+        <td>{{ row.owner|default:"—" }}</td>
+        <td class="num">{{ row.mean_speed_mph|floatformat:2 }}</td>
+        <td class="num">
+          {% if row.high_congestion_share_pct is not None %}{{ row.high_congestion_share_pct|floatformat:1 }}%{% else %}—{% endif %}
+        </td>
+        <td class="num">{{ row.hours_observed|default:"—" }}</td>
+        <td><a href="{% url 'portal:segment_detail' row.link_id %}">detail →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="empty">No segments match the current filters.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,1 @@
+"""Traffic portal Django application."""
