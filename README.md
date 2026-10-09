@@ -1,4 +1,4 @@
-# Spatiotemporal Traffic Prediction and Route Optimization
+# Spatiotemporal Traffic Prediction and Optimization
 
 ## Abstract
 
