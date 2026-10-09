@@ -26,7 +26,7 @@ def create_dashboard(api_base_url: str | None = None, web_url: str | None = None
     client = TrafficApiClient(api_base_url or os.environ.get("TRAFFIC_API_URL", DEFAULT_BASE_URL))
     portal = web_url or os.environ.get("TRAFFIC_WEB_URL", DEFAULT_WEB_URL)
     meta = client.meta()
-    app = Dash(__name__, title="NYC Traffic Analytics", suppress_callback_exceptions=True)
+    app = Dash(__name__, title="Traffic Analytics", suppress_callback_exceptions=True)
     app.layout = layouts.page_layout(meta, web_url=portal)
     callbacks.register_callbacks(app, client)
     app.traffic_client = client

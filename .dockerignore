@@ -1,0 +1,27 @@
+# Raw data (5.4 GB, not needed in image)
+data_csv/
+
+# Large generated data files (reproduced by pipeline or mounted at runtime)
+data/interim/
+data/processed/hourly_traffic.csv
+data/processed/test_predictions.csv
+data/features/model_dataset.csv
+
+# Databases (mount at runtime or regenerate)
+data/traffic.db
+data/django.sqlite3
+
+# Python env and cache
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

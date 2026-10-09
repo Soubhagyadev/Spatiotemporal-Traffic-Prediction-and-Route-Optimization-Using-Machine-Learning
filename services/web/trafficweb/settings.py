@@ -24,7 +24,8 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY", "django-insecure-dev-only-spatiotemporal-traffic-portal"
 )
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() not in {"0", "false", "no"}
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
+_allowed = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",")]
 
 INSTALLED_APPS = ["django.contrib.staticfiles", "portal"]
 

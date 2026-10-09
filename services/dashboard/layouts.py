@@ -114,7 +114,7 @@ def page_layout(meta: dict, web_url: str = "http://127.0.0.1:8000") -> html.Div:
                 [
                     html.Div(
                         [
-                            html.H1("NYC Traffic Analytics"),
+                            html.H1("Traffic Analytics"),
                             html.P(
                                 f"Spatiotemporal traffic prediction dashboard · {window} · "
                                 f"{dataset.get('links', '?')} road segments · "
